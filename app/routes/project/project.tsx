@@ -21,13 +21,12 @@ export async function loader({
     documentId: item.documentId,
     title: item.title,
     description: item.description,
-    category: item.categories,
+    category: item.category,
     featured: item.featured,
     image: item.image?.url ? `${item.image.url}` : null,
     url: item.url,
     date: item.date,
   }));
-  console.log(image.$$typeof);
 
   return { projects };
 }

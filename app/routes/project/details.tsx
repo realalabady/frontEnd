@@ -5,42 +5,48 @@ import { Link } from "react-router";
 
 export async function loader({ request, params }: Route.LoaderArgs) {
   const { id } = params;
-
+  console.log(id);
   const res = await fetch(
     `${
       import.meta.env.VITE_STRAPI_API_URL
-    }api/projects?filters[documentId][$eq]=${id}&populate=*`
+    }api/projects?filters[id][$eq]=${parseInt(id)}&populate=*`
   );
+  // console.log(res);
 
-  if (!res.ok) throw new Response("Project not found", { status: 404 });
+  if (!res.ok) {
+    throw new Response("Project not found", { status: 404 });
+  }
+  const json = await res.json();
 
-  const json: StrapiResponse<StrapiProject> = await res.json();
+  if (!json.data || json.data.length === 0) {
+    throw new Response("Project not found", { status: 404 });
+  }
 
   const item = json.data[0];
 
-  const project: Project = {
+  const project = {
     id: item.id,
     documentId: item.documentId,
     title: item.title,
     description: item.description,
+    category: item.categories,
+    featured: item.featured,
     image: item.image?.url
-      ? `${item.image?.url}`
+      ? `${item.image.url}`
       : `https://res.cloudinary.com/ddpeddscz/image/upload/v1764265950/small_project_1_e9ef6661dd.png`,
     url: item.url,
     date: item.date,
-    category: item.category,
-    featured: item.featured,
   };
-  console.log(project);
+
   return { project };
 }
-
 const ProjectDetailsPage = ({ loaderData }: Route.ComponentProps) => {
   const { project } = loaderData;
+  console.log(project);
   return (
     <>
       <Link
-        to="/projects"
+        to="/project"
         className="flex items-center text-blue-400 hover:text-blue-500 mb-6 transition"
       >
         <FaArrowLeft className="mr-2" /> Back To Projects
