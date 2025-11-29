@@ -23,7 +23,9 @@ export async function loader({
     description: item.description,
     category: item.category,
     featured: item.featured,
-    image: item.image?.url ? `${item.image.url}` : null,
+   image: item.image?.url
+      ? `${item.image.url}`
+      : `https://res.cloudinary.com/ddpeddscz/image/upload/v1764265950/small_project_1_e9ef6661dd.png`,
     url: item.url,
     date: item.date,
   }));
